@@ -9,24 +9,45 @@ import jcifs.smb.SmbFile;
 
 public class MediaItem {
     private String name;
-    private String url_Smb;
-    private String url_Http;
+    //下载该文件的地址
+    private String url_Load;
+    //在线打开文件的地址
+    private String url_Open;
+    //下载进度
+    private int rate = 0;
+    //进度条可见
+    private boolean visble = false;
 
-
-    public String getUrl_Smb() {
-        return url_Smb;
+    public boolean isVisble() {
+        return visble;
     }
 
-    public void setUrl_Smb(String url_Smb) {
-        this.url_Smb = url_Smb;
+    public void setVisble(boolean visble) {
+        this.visble = visble;
     }
 
-    public String getUrl_Http() {
-        return url_Http;
+    public int getRate() {
+        return rate;
     }
 
-    public void setUrl_Http(String url_Http) {
-        this.url_Http = url_Http;
+    public void setRate(int rate) {
+        this.rate = rate;
+    }
+
+    public String getUrl_Load() {
+        return url_Load;
+    }
+
+    public void setUrl_Load(String url_Load) {
+        this.url_Load = url_Load;
+    }
+
+    public String getUrl_Open() {
+        return url_Open;
+    }
+
+    public void setUrl_Open(String url_Open) {
+        this.url_Open = url_Open;
     }
 
     public String getName() {

@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingLeft="12dp"
+    android:paddingRight="12dp"
     android:orientation="vertical"
     tools:context="com.smb.smbtest.MainActivity">
 
@@ -17,6 +19,7 @@
         android:text="共享文件搜索"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/listview"

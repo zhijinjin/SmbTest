@@ -14,17 +14,19 @@ import jcifs.smb.SmbFile;
 
 public class SmbUtil {
 
-
     private static SmbUtil smbUtil;
     //共享电脑的登陆用户名
     public  String SHARE_NAME = "";
     //共享电脑的登陆用户密码
     public  String SHARE_PWD = "";
-    InetAddress bindAddr;
+    //要获取的文件格式类型
     private String[] types = new String[]{};
     private SearchShareFile.OnSearchShareFile searchShareFileLisener;
     private LoadShareFile.ShareFileLoadLesner onLoadShareFileLisner;
+    //下载时候progress 更新频率 秒
     private int pc= 1;
+    //下载时候存储路径
+    private String savePath = "下载的共享文件";
 
     public static SmbUtil getInstence(){
         if (smbUtil==null){
@@ -48,18 +50,17 @@ public class SmbUtil {
         searchShareFile.execute(url);
     }
 
-    public void loadShareFile(String url_smb,String folderName){
-        loadShareFile(url_smb,folderName,1);
-    }
-
-    public void loadShareFile(String url_smb,String folderName,int pc){
-        LoadShareFile loadShareFile = new LoadShareFile(folderName);
+    /**
+     * 下载共享文件
+     * @param url_smb 例如：192.168.1.101/迅雷下载/钢铁侠1.mp4
+     */
+    public void loadShareFile(int id,String url_smb){
+        LoadShareFile loadShareFile = new LoadShareFile(savePath);
         loadShareFile.setShareFileLoadLesner(onLoadShareFileLisner);
         loadShareFile.setPC(pc);
+        loadShareFile.setId(id);
         loadShareFile.execute(url_smb);
     }
-
-
 
     public String getSHARE_NAME(){
         return SHARE_NAME;
@@ -68,8 +69,6 @@ public class SmbUtil {
     public String getSHARE_PWD(){
         return SHARE_PWD;
     }
-
-
 
     public SmbUtil setShareName(String name){
         this.SHARE_NAME = name;
@@ -100,7 +99,13 @@ public class SmbUtil {
         return smbUtil;
     }
 
-    public void setPC(int pc){
+    public SmbUtil setPC(int pc){
         this.pc = pc;
+        return smbUtil;
+    }
+
+    public SmbUtil setSvaePath(String path){
+        this.savePath = path;
+        return smbUtil;
     }
 }

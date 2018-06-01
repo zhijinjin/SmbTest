@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.smb.sbmlibrary.MediaItem;
@@ -45,7 +46,14 @@ public class MyRecycViewAdapter extends RecyclerView.Adapter<MyRecycViewAdapter.
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        holder.mTv.setText(mData.get(position).getName());
+        MediaItem item = mData.get(position);
+        holder.mTv.setText(item.getName());
+        if(item.isVisble()){
+            holder.progressbar.setVisibility(View.VISIBLE);
+            holder.progressbar.setProgress(item.getRate());
+        }else{
+            holder.progressbar.setVisibility(View.GONE);
+        }
         holder.mTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,11 +79,24 @@ public class MyRecycViewAdapter extends RecyclerView.Adapter<MyRecycViewAdapter.
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView mTv;
+        ProgressBar progressbar;
         public ViewHolder(View itemView) {
             super(itemView);
             mTv = (TextView) itemView.findViewById(R.id.item_tv);
+            progressbar  = (ProgressBar)itemView.findViewById(R.id.progressbar);
         }
     }
+
+    public void setProgress(int position,int rate){
+        getItem(position).setRate(rate);
+        this.notifyDataSetChanged();
+    }
+
+    public void loadSart(int position){
+        getItem(position).setVisble(true);
+        this.notifyDataSetChanged();
+    }
+
 
     public interface OnItemClickListener{
         void onClick(int position);

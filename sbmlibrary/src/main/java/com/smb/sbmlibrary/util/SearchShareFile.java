@@ -62,8 +62,8 @@ public class SearchShareFile  extends AsyncTask<String, Void, ArrayList<MediaIte
                         MediaItem item = new MediaItem();
                         item.setName(path.substring(path.lastIndexOf("/")+1));
                         String httpReq = "http://" +  FileUtil.ip + ":" + FileUtil.port + "/smb=";
-                        item.setUrl_Smb(path.substring(6));
-                        item.setUrl_Http(httpReq + URLEncoder.encode(path.substring(6), "UTF-8"));
+                        item.setUrl_Load(path.substring(6));
+                        item.setUrl_Open(httpReq + URLEncoder.encode(path.substring(6), "UTF-8"));
                         list.add(item);
                     }
                     catch (UnsupportedEncodingException e){

@@ -1,11 +1,14 @@
 package com.smb.smbtest;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.ContentLoadingProgressBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +16,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.smb.sbmlibrary.LoadShareFile;
@@ -30,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements SearchShareFile.O
     RecyclerView listView;
     private static final int MY_PERMIEAD_CONTACTS = 100;
     private String TAG = "TAG";
+//    private ProgressBar progressbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements SearchShareFile.O
 
         final EditText ed= findViewById(R.id.edittext);
         listView = findViewById(R.id.listview);
+//        progressbar  = findViewById(R.id.progressbar);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         listView.setLayoutManager(manager);
         adapter = new MyRecycViewAdapter(this);
@@ -47,6 +53,8 @@ public class MainActivity extends AppCompatActivity implements SearchShareFile.O
 
         SmbUtil.getInstence().setShareName("951507056@qq.com")
                 .setSharePwd("zhi123456")
+                .setPC(1)
+                .setSvaePath("获取的共享文件")
                 .setTypes(new String[]{".mp4",".mp3",".html",".rmvb"})
                 .setSearchShareFileLisener(this)
                 .setLoadShareFileLisener(this);
@@ -83,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements SearchShareFile.O
 
     @Override
     public void onClick(int position) {
-        String url = adapter.getItem(position).getUrl_Http();
+        String url = adapter.getItem(position).getUrl_Open();
             Intent intent = new Intent();
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setAction(android.content.Intent.ACTION_VIEW);
@@ -92,8 +100,18 @@ public class MainActivity extends AppCompatActivity implements SearchShareFile.O
     }
 
     @Override
-    public void onLongClick(int position) {
-        SmbUtil.getInstence().loadShareFile(adapter.getItem(position).getUrl_Smb(),"共享文件下载");
+    public void onLongClick(final int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false)
+                .setTitle("确认下载")
+                .setNegativeButton("取消",null)
+                .setPositiveButton("下载", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        SmbUtil.getInstence().loadShareFile(position,adapter.getItem(position).getUrl_Load());
+                    }
+                });
+        builder.show();
     }
 
     private String getMedraType(String url){
@@ -110,24 +128,27 @@ public class MainActivity extends AppCompatActivity implements SearchShareFile.O
 
 
     @Override
-    public void onLoadStart() {
+    public void onLoadStart(int id) {
         Log.i(TAG, "onLoadStart: ");
+        adapter.loadSart(id);
         Toast.makeText(MainActivity.this,"开始下载",Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onLoadSucces() {
+    public void onLoadSucces(int id) {
         Log.i(TAG, "onLoadSucces: ");
+        adapter.setProgress(id,100);
         Toast.makeText(MainActivity.this,"下载完成",Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onLoading(String rate) {
+    public void onLoading(int id,String rate) {
+        adapter.setProgress(id,Integer.valueOf(rate));
         Log.i(TAG,"下载："+rate+"%");
     }
 
     @Override
-    public void onLoadFaild(String msg) {
+    public void onLoadFaild(int id,String msg) {
         Log.i(TAG, "onLoadFaild: "+msg);
         Toast.makeText(MainActivity.this,"下载失败",Toast.LENGTH_SHORT).show();
     }

@@ -33,12 +33,13 @@ public class LoadShareFile extends AsyncTask<String, Boolean, Boolean> {
     //保存文件的文件夹的名字
     private String folderName;
     //文件总大小
-    private int allSize = 0;
+    private long allSize = 0;
     //一下载大小
-    private int allLoad = 0;
+    private long allLoad = 0;
     private ShareFileLoadLesner fileLoadLesner;
     private long lastTime;
     private int pc=1;
+    private int id;
 
 
     public LoadShareFile(String folderName){
@@ -59,7 +60,8 @@ public class LoadShareFile extends AsyncTask<String, Boolean, Boolean> {
             smbFile = new SmbFile("smb://"+params[0],auth);
             fileName = (params[0].substring(params[0].lastIndexOf("/")+1));
             //获取文件总大小
-            allSize = smbFile.getContentLength();
+//            allSize = smbFile.getContentLength();
+            allSize = smbFile.length();
             //判断存储空间是否够用
             if(SDCardUtils.getFreeBytes(SDCardUtils.getStorePath())<allSize){
                 sentHandlerMsg(1,"存储空间不足");
@@ -136,10 +138,10 @@ public class LoadShareFile extends AsyncTask<String, Boolean, Boolean> {
     }
 
     public interface ShareFileLoadLesner{
-        void onLoadStart();
-        void onLoadSucces();
-        void onLoading(String rate);
-        void onLoadFaild(String msg);
+        void onLoadStart(int id);
+        void onLoadSucces(int id);
+        void onLoading(int id,String rate);
+        void onLoadFaild(int id,String msg);
     }
 
     public void setPC(int pc){
@@ -162,26 +164,30 @@ public class LoadShareFile extends AsyncTask<String, Boolean, Boolean> {
             switch (msg.what) {
                 case 1: //失败
                     if(null!=fileLoadLesner){
-                        fileLoadLesner.onLoadFaild(msg.getData().getString("msg"));
+                        fileLoadLesner.onLoadFaild(id,msg.getData().getString("msg"));
                     }
                     break;
                 case 2: //成功
                     if(null!=fileLoadLesner){
-                        fileLoadLesner.onLoadSucces();
+                        fileLoadLesner.onLoadSucces(id);
                     }
                     break;
                 case 3: //
                     if(null!=fileLoadLesner){
-                        fileLoadLesner.onLoadStart();
+                        fileLoadLesner.onLoadStart(id);
                     }
                     break;
                 case 4: //
                     if(null!=fileLoadLesner){
-                        fileLoadLesner.onLoading(msg.getData().getString("msg"));
+                        fileLoadLesner.onLoading(id,msg.getData().getString("msg"));
                     }
                     break;
             }
         }
     };
+
+    public void setId(int id){
+        this.id = id;
+    }
 
 }
