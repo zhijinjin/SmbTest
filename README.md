@@ -1,5 +1,6 @@
 # SmbTest
 Smb  协议，在线播放共享视频，或者下载共享视频
+![Alt text](https://github.com/zhijinjin/SmbTest/blob/master/5_20180621155634.gif)
 
 第一步：关闭防火墙
 
