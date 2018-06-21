@@ -6,6 +6,21 @@ Smb  协议，在线播放共享视频，或者下载共享视频
 第二步：共享文件夹
 
 第三步：代码中
+
+Step 1. Add the JitPack repository to your build file
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+  
+  Step 2. Add the dependency
+  
+  	dependencies {
+	        implementation 'com.github.zhijinjin:SmbTest:v1.0'
+	}
+
               
      SmbUtil.getInstence()
                 .setShareName("用户名")           //共享电脑用户名
